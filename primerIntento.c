@@ -23,6 +23,45 @@ Añadir la comando “AumentarStock [Nombre] [Unidades]” y “DisminuirStock [
 #include <pthread.h>
 #include "hilos.h"
 
+#define CMD_SIZE 11
+#define STR_LEN 1024
+
+void menu(char *action, t_list* libros) {
+
+    char cmd[CMD_SIZE];
+    char *name;
+    int len;
+
+    // Copio los primeros caracteres del string para saber que accion ejecutar
+    strncpy(cmd, action, CMD_SIZE);
+    cmd[CMD_SIZE] = '\0';
+
+    switch (getCommand(cmd)) {
+
+        // ListarLibros   
+        case 1:
+            list_iterate(libros, print);
+            break;
+        // cargar
+        case 2:
+            // Guarda el tamaño de string leido por consola y le resto el tamaño del comando (CargarLibro)
+            len = strlen(action) - CMD_SIZE - 2;
+            // Asigno el espacio de memoria
+            name = malloc(len);
+            // Me muevo "CMD_SIZE + 1" caracteres desde action, para saltear la parte del comando y copio "len" caracteres en "name"
+            memcpy(name, action + CMD_SIZE + 1, len);
+
+            name[len] = '\0';
+
+            agregar(libros, name, "AA-AAA-AA", atof("123"), atoi("123"));
+        break;
+
+        default:
+            printf("\nNo existe el comando: %s\n", action);
+        break;
+    }
+}
+
 int main(int argc, char* argv[]) {
 
     t_list* libros = list_create();
@@ -50,9 +89,21 @@ int main(int argc, char* argv[]) {
         break;
 
         default:
-            printf("apaga martin, no pongas espacios salame");
+            printf("No existe el comando: %s", argv[1]);
         break;
         }
+    }
+
+    // Leo un mensaje desde la consola
+    char action[STR_LEN];
+    fgets (action, STR_LEN, stdin);
+    while (strcmp(action, "exit") != 0) {
+
+        // Evaluo el comando
+        menu(action, libros);
+
+        // Vuelvo a leer otro comando
+        fgets (action, STR_LEN, stdin);
     }
   
     list_destroy_and_destroy_elements(libros,the_destroyer);
