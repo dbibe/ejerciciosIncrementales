@@ -2,7 +2,7 @@
 
 
 int getCommand(char* cmd) {
-  if(strcmp(cmd, "ListarLibros") == 0) {
+  if(strcmp(cmd, "ListarLibro") == 0) {
       return 1;
   }
   if(strcmp(cmd, "CargarLibro") == 0) {
@@ -12,6 +12,7 @@ int getCommand(char* cmd) {
 }
 
 void agregar(t_list* libros, char *str, char* _isbn, double _precio, int _stock) {
+  printf("DATA: %s %s %f %d", str, _isbn, _precio, _stock);
 	book *libro;
 	libro = malloc(sizeof(struct node));
   
